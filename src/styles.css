@@ -1,0 +1,350 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #e5eefc;
+  background:
+    radial-gradient(circle at top, rgba(52, 90, 255, 0.3), transparent 32%),
+    linear-gradient(180deg, #050816 0%, #080d1e 45%, #03050b 100%);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: inherit;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.shell {
+  min-height: 100vh;
+  padding: 32px;
+  display: grid;
+  gap: 24px;
+}
+
+.hero,
+.workspace {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+}
+
+.hero__copy h1 {
+  margin: 6px 0 10px;
+  font-size: clamp(3rem, 8vw, 5.4rem);
+  letter-spacing: -0.05em;
+}
+
+.hero__text {
+  max-width: 62ch;
+  margin: 0;
+  color: rgba(228, 238, 252, 0.74);
+  line-height: 1.6;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #8fb0ff;
+  font-size: 0.74rem;
+}
+
+.hero__status {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge,
+.text-button,
+.key {
+  border: 1px solid rgba(160, 183, 255, 0.15);
+  background: rgba(10, 15, 34, 0.72);
+  color: #e9f0ff;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px);
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.badge--active {
+  background: rgba(58, 95, 255, 0.2);
+  border-color: rgba(126, 150, 255, 0.4);
+}
+
+.badge--ghost {
+  color: rgba(229, 238, 252, 0.66);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.calculator,
+.history {
+  border: 1px solid rgba(160, 183, 255, 0.14);
+  background: rgba(9, 13, 28, 0.72);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(20px);
+}
+
+.calculator {
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.display {
+  min-height: 320px;
+  padding: 28px;
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  background:
+    radial-gradient(circle at top right, rgba(70, 105, 255, 0.18), transparent 26%),
+    linear-gradient(180deg, rgba(21, 29, 56, 0.7), rgba(8, 12, 25, 0.88));
+  position: relative;
+}
+
+.display__expression {
+  color: rgba(216, 227, 245, 0.72);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  min-height: 1.5em;
+  word-break: break-all;
+}
+
+.display__result {
+  font-size: clamp(2.8rem, 8vw, 5rem);
+  letter-spacing: -0.05em;
+  word-break: break-all;
+}
+
+.display__error {
+  color: #fda4af;
+}
+
+.pad {
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.pad__row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.key {
+  border-radius: 18px;
+  padding: 18px 16px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.key:hover {
+  transform: translateY(-1px);
+  border-color: rgba(174, 196, 255, 0.36);
+}
+
+.key:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.key--primary {
+  background: linear-gradient(180deg, rgba(77, 116, 255, 0.96), rgba(46, 82, 216, 0.88));
+}
+
+.key--danger {
+  color: #ffcad2;
+}
+
+.history {
+  border-radius: 28px;
+  padding: 22px;
+}
+
+.panel-header,
+.history__item,
+.snake__hud,
+.snake__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.text-button {
+  border-radius: 999px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.history__list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.history__item,
+.empty,
+.history__note {
+  border-radius: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(160, 183, 255, 0.12);
+  background: rgba(17, 22, 43, 0.58);
+}
+
+.history__item strong {
+  color: #9cc0ff;
+}
+
+.empty,
+.history__note {
+  color: rgba(229, 238, 252, 0.65);
+}
+
+.history__note {
+  margin-top: 18px;
+}
+
+.snake {
+  display: grid;
+  gap: 14px;
+}
+
+.snake__label {
+  display: block;
+  color: rgba(229, 238, 252, 0.62);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.snake__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 6px;
+  padding: 18px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top, rgba(76, 109, 255, 0.2), transparent 34%),
+    rgba(4, 8, 18, 0.92);
+  overflow: hidden;
+}
+
+.snake__grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: calc(100% / 13) calc(100% / 13);
+  pointer-events: none;
+}
+
+.snake__cell {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: rgba(145, 160, 185, 0.06);
+}
+
+.snake__cell--head {
+  background: linear-gradient(180deg, #d7e7ff, #7ca2ff);
+  box-shadow: 0 0 18px rgba(124, 162, 255, 0.45);
+}
+
+.snake__cell--body {
+  background: linear-gradient(180deg, rgba(76, 109, 255, 0.9), rgba(43, 66, 188, 0.8));
+}
+
+.snake__cell--food {
+  background: linear-gradient(180deg, #ff8ba7, #ff5477);
+  box-shadow: 0 0 20px rgba(255, 84, 119, 0.45);
+}
+
+.snake__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 8, 18, 0.58);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.shell--flash .display {
+  animation: pulse 900ms ease;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 rgba(124, 162, 255, 0);
+  }
+  50% {
+    box-shadow: inset 0 0 0 9999px rgba(124, 162, 255, 0.05);
+  }
+}
+
+@media (max-width: 960px) {
+  .hero,
+  .workspace {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding: 18px;
+  }
+
+  .display {
+    min-height: 240px;
+    padding: 20px;
+  }
+
+  .pad__row {
+    gap: 8px;
+  }
+
+  .key {
+    padding: 16px 12px;
+  }
+}
