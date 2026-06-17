@@ -30,7 +30,7 @@ Open the local development URL shown in the terminal.
 
 ## Screenshots
 
-Add product screenshots here once final captures are available.
+Soon.
 
 ## Roadmap
 
