@@ -32,7 +32,9 @@ Open the local development URL shown in the terminal.
 
 ## Screenshots
 
-Soon.
+![CalcSnake Calculator](screenshots/calcsnake.png)
+
+![CalcSnake Game Mode](screenshots/calcsnake2.png)
 
 ## Update Notes
 
