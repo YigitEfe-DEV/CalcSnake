@@ -6,7 +6,9 @@ CalcSnake is a premium calculator experience built with React and Vite. It combi
 
 - Full calculator with keyboard support
 - Scientific operations: percent, square root, power, and parentheses
+- Calculator memory controls: `MC`, `MR`, `M+`, and `M-`
 - Calculation history panel with clear history action
+- Clickable history results for quick reuse
 - Error handling for invalid expressions
 - Hidden Snake mode activated by entering `1984` and pressing `=`
 - Snake controls with arrow keys and WASD
@@ -31,6 +33,15 @@ Open the local development URL shown in the terminal.
 ## Screenshots
 
 Soon.
+
+## Update Notes
+
+### v1.1.0 - Calculator workflow update
+
+- Added memory controls for storing, recalling, adding, and subtracting the active calculation value.
+- Added a visible memory readout under the calculator display.
+- Made calculation history entries clickable so previous results can be reused instantly.
+- Bumped the app version to `1.1.0`.
 
 ## Roadmap
 
