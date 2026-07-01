@@ -45,14 +45,6 @@ function reducer(state, action) {
       return evaluateExpression(state);
     case 'clear-history':
       return { ...state, history: [] };
-    case 'unlock':
-      return { ...state, unlocked: true };
-    case 'set-history':
-      return { ...state, history: action.value };
-    case 'set-error':
-      return { ...state, error: action.value };
-    case 'set-sequence':
-      return { ...state, sequence: action.value };
     default:
       return state;
   }
