@@ -13,6 +13,7 @@ const initialState = {
   awaitingClear: false,
   unlocked: false,
   sequence: '',
+  memory: 0,
   history: loadHistory(),
   error: '',
 };
@@ -46,6 +47,16 @@ function reducer(state, action) {
       return evaluateExpression(state);
     case 'clear-history':
       return { ...state, history: [] };
+    case 'memory-clear':
+      return { ...state, memory: 0, error: '' };
+    case 'memory-recall':
+      return recallMemory(state);
+    case 'memory-add':
+      return updateMemory(state, 1);
+    case 'memory-subtract':
+      return updateMemory(state, -1);
+    case 'recall-history':
+      return recallHistory(state, action.entry);
     default:
       return state;
   }
@@ -138,6 +149,57 @@ function evaluateExpression(state) {
       sequence: '',
     };
   }
+}
+
+function getCurrentValue(state) {
+  if (!state.expression) return Number(state.display) || 0;
+  return computeExpression(state.expression);
+}
+
+function updateMemory(state, direction) {
+  if (state.unlocked) return state;
+  try {
+    const nextMemory = state.memory + getCurrentValue(state) * direction;
+    return {
+      ...state,
+      memory: nextMemory,
+      error: '',
+      awaitingClear: true,
+      display: formatNumber(nextMemory),
+      expression: formatNumber(nextMemory),
+    };
+  } catch {
+    return {
+      ...state,
+      display: 'Error',
+      expression: '',
+      awaitingClear: true,
+      error: 'Cannot store this value',
+    };
+  }
+}
+
+function recallMemory(state) {
+  if (state.unlocked) return state;
+  const display = formatNumber(state.memory);
+  return {
+    ...state,
+    display,
+    expression: display,
+    awaitingClear: true,
+    error: '',
+  };
+}
+
+function recallHistory(state, entry) {
+  if (state.unlocked || !entry) return state;
+  return {
+    ...state,
+    display: entry.result,
+    expression: entry.result,
+    awaitingClear: true,
+    error: '',
+  };
 }
 
 function trackSequence(sequence, value) {
@@ -281,6 +343,7 @@ export default function App() {
 
   const keys = useMemo(
     () => [
+      ['MC', 'MR', 'M+', 'M-'],
       ['C', '⌫', '(', ')'],
       ['%', '^', '√', '÷'],
       ['7', '8', '9', '×'],
@@ -296,6 +359,10 @@ export default function App() {
     if (value === 'C') dispatch({ type: 'clear' });
     else if (value === '⌫') dispatch({ type: 'backspace' });
     else if (value === '=') dispatch({ type: 'equals' });
+    else if (value === 'MC') dispatch({ type: 'memory-clear' });
+    else if (value === 'MR') dispatch({ type: 'memory-recall' });
+    else if (value === 'M+') dispatch({ type: 'memory-add' });
+    else if (value === 'M-') dispatch({ type: 'memory-subtract' });
     else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√'].includes(value)) dispatch({ type: 'operate', value });
     else dispatch({ type: 'append', value });
   };
@@ -327,6 +394,7 @@ export default function App() {
               <>
                 <div className="display__expression">{state.expression || state.display}</div>
                 <div className="display__result">{state.display}</div>
+                <div className="display__memory">Memory {formatNumber(state.memory)}</div>
                 {state.error ? <div className="display__error">{state.error}</div> : null}
               </>
             ) : (
@@ -370,10 +438,15 @@ export default function App() {
               <p className="empty">No calculations yet.</p>
             ) : (
               state.history.map((item) => (
-                <article className="history__item" key={item.id}>
+                <button
+                  type="button"
+                  className="history__item history__item--button"
+                  key={item.id}
+                  onClick={() => dispatch({ type: 'recall-history', entry: item })}
+                >
                   <span>{item.expression}</span>
                   <strong>{item.result}</strong>
-                </article>
+                </button>
               ))
             )}
           </div>
