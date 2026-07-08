@@ -76,6 +76,10 @@ function appendInput(state, value) {
     baseExpression = '';
   }
 
+  if (value === '.' && hasDecimalInCurrentNumber(baseExpression)) {
+    return state;
+  }
+
   const nextDisplay = baseDisplay + value;
   const nextExpression = baseExpression + value;
 
@@ -87,6 +91,11 @@ function appendInput(state, value) {
     error: '',
     sequence: trackSequence(state.sequence, value),
   };
+}
+
+function hasDecimalInCurrentNumber(expression) {
+  const segments = expression.split(/[+\-*/()^]/);
+  return segments[segments.length - 1].includes('.');
 }
 
 function appendOperator(state, value) {
