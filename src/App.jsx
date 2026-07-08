@@ -64,8 +64,21 @@ function reducer(state, action) {
 
 function appendInput(state, value) {
   if (state.unlocked) return state;
-  const nextDisplay = state.awaitingClear || state.display === '0' ? value : state.display + value;
-  const nextExpression = state.awaitingClear || state.expression === '0' ? value : state.expression + value;
+
+  let baseDisplay = state.display;
+  let baseExpression = state.expression;
+
+  if (state.awaitingClear) {
+    baseDisplay = '';
+    baseExpression = '';
+  } else if (baseDisplay === '0' && value !== '.') {
+    baseDisplay = '';
+    baseExpression = '';
+  }
+
+  const nextDisplay = baseDisplay + value;
+  const nextExpression = baseExpression + value;
+
   return {
     ...state,
     display: nextDisplay,
