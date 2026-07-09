@@ -124,6 +124,15 @@ function appendOperator(state, value) {
 function backspace(state) {
   if (state.unlocked) return state;
   if (state.awaitingClear) return { ...state, awaitingClear: false, display: '0', expression: '' };
+  if (state.expression.endsWith('Math.sqrt(')) {
+    const next = state.expression.slice(0, -'Math.sqrt('.length);
+    return {
+      ...state,
+      display: next || '0',
+      expression: next,
+      error: '',
+    };
+  }
   const next = state.expression.slice(0, -1);
   return {
     ...state,
