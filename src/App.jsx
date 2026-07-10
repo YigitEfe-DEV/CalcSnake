@@ -170,13 +170,13 @@ function evaluateExpression(state) {
       error: '',
       sequence: '',
     };
-  } catch {
+  } catch (error) {
     return {
       ...state,
       display: 'Error',
       expression: '',
       awaitingClear: true,
-      error: 'Invalid calculation',
+      error: error?.message === 'Division by zero' ? 'Cannot divide by zero' : 'Invalid calculation',
       sequence: '',
     };
   }
@@ -253,6 +253,9 @@ function computeExpression(expression) {
 
   // eslint-disable-next-line no-new-func
   const result = Function(`"use strict"; return (${normalized});`)();
+  if (result === Infinity || result === -Infinity) {
+    throw new Error('Division by zero');
+  }
   if (!Number.isFinite(result)) throw new Error('Invalid result');
   return result;
 }
