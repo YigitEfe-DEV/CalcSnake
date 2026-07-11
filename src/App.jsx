@@ -47,6 +47,11 @@ function reducer(state, action) {
       return evaluateExpression(state);
     case 'clear-history':
       return { ...state, history: [] };
+    case 'delete-history':
+      return {
+        ...state,
+        history: state.history.filter((entry) => entry.id !== action.id),
+      };
     case 'memory-clear':
       return { ...state, memory: 0, error: '' };
     case 'memory-recall':
@@ -485,15 +490,24 @@ export default function App() {
               <p className="empty">No calculations yet.</p>
             ) : (
               state.history.map((item) => (
-                <button
-                  type="button"
-                  className="history__item history__item--button"
-                  key={item.id}
-                  onClick={() => dispatch({ type: 'recall-history', entry: item })}
-                >
-                  <span>{item.prettyExpression}</span>
-                  <strong>{item.result}</strong>
-                </button>
+                <div className="history__row" key={item.id}>
+                  <button
+                    type="button"
+                    className="history__item history__item--button"
+                    onClick={() => dispatch({ type: 'recall-history', entry: item })}
+                  >
+                    <span>{item.prettyExpression}</span>
+                    <strong>{item.result}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Delete history entry"
+                    className="history__delete"
+                    onClick={() => dispatch({ type: 'delete-history', id: item.id })}
+                  >
+                    ×
+                  </button>
+                </div>
               ))
             )}
           </div>

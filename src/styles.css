@@ -250,6 +250,30 @@ input {
   background: rgba(24, 31, 58, 0.72);
 }
 
+.history__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.history__delete {
+  border-radius: 14px;
+  width: 36px;
+  border: 1px solid rgba(160, 183, 255, 0.12);
+  background: rgba(17, 22, 43, 0.58);
+  color: rgba(229, 238, 252, 0.7);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.history__delete:hover {
+  background: rgba(255, 84, 119, 0.18);
+  color: #ffd3dc;
+}
+
 .empty,
 .history__note {
   color: rgba(229, 238, 252, 0.65);
