@@ -160,7 +160,12 @@ function evaluateExpression(state) {
   try {
     const value = computeExpression(state.expression);
     const display = formatNumber(value);
-    const entry = { id: crypto.randomUUID(), expression: state.expression, result: display };
+    const entry = {
+      id: crypto.randomUUID(),
+      expression: state.expression,
+      prettyExpression: prettifyExpression(state.expression),
+      result: display,
+    };
     return {
       ...state,
       display,
@@ -262,6 +267,14 @@ function computeExpression(expression) {
 
 function formatNumber(value) {
   return Number.isInteger(value) ? String(value) : Number(value.toFixed(10)).toString();
+}
+
+function prettifyExpression(expression) {
+  return expression
+    .replace(/Math\.sqrt\(/g, '√(')
+    .replace(/\*/g, '×')
+    .replace(/\//g, '÷')
+    .replace(/\^/g, '^');
 }
 
 function loadHighScore() {
@@ -478,7 +491,7 @@ export default function App() {
                   key={item.id}
                   onClick={() => dispatch({ type: 'recall-history', entry: item })}
                 >
-                  <span>{item.expression}</span>
+                  <span>{item.prettyExpression}</span>
                   <strong>{item.result}</strong>
                 </button>
               ))
