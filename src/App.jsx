@@ -422,6 +422,12 @@ export default function App() {
   const restartGame = () => setGame(createGameState());
   const togglePause = () => setGame((prev) => ({ ...prev, paused: !prev.paused }));
 
+  const confirmClearHistory = () => {
+    if (state.history.length === 0) return;
+    const confirmed = window.confirm('Clear all calculation history?');
+    if (confirmed) dispatch({ type: 'clear-history' });
+  };
+
   return (
     <main className={`shell ${state.unlocked ? 'shell--game' : ''} ${flashUnlock ? 'shell--flash' : ''}`}>
       <section className="hero">
@@ -480,7 +486,7 @@ export default function App() {
         <aside className="history">
           <div className="panel-header">
             <h2>History</h2>
-            <button type="button" className="text-button" onClick={() => dispatch({ type: 'clear-history' })}>
+            <button type="button" className="text-button" onClick={confirmClearHistory}>
               Clear history
             </button>
           </div>
