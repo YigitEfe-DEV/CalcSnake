@@ -452,7 +452,9 @@ export default function App() {
               <>
                 <div className="display__expression">{state.expression || state.display}</div>
                 <div className="display__result">{state.display}</div>
-                <div className="display__memory">Memory {formatNumber(state.memory)}</div>
+                <div className={`display__memory ${state.memory !== 0 ? 'display__memory--active' : ''}`}>
+                {state.memory === 0 ? 'Memory clear' : `Memory ${formatNumber(state.memory)}`}
+              </div>
                 {state.error ? <div className="display__error">{state.error}</div> : null}
               </>
             ) : (
