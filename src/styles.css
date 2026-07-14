@@ -286,6 +286,33 @@ input {
   color: rgba(229, 238, 252, 0.65);
 }
 
+.empty--state {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.empty__icon {
+  font-size: 2.4rem;
+  color: rgba(124, 162, 255, 0.4);
+  line-height: 1;
+}
+
+.empty__title {
+  margin: 0;
+  font-size: 0.98rem;
+  color: rgba(229, 238, 252, 0.78);
+}
+
+.empty__hint {
+  margin: 0;
+  font-size: 0.86rem;
+  color: rgba(229, 238, 252, 0.5);
+  max-width: 28ch;
+}
+
 .history__note {
   margin-top: 18px;
 }

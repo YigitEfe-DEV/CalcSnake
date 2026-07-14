@@ -495,7 +495,11 @@ export default function App() {
 
           <div className="history__list">
             {state.history.length === 0 ? (
-              <p className="empty">No calculations yet.</p>
+              <div className="empty empty--state">
+                <span className="empty__icon" aria-hidden="true">∑</span>
+                <p className="empty__title">No history yet</p>
+                <p className="empty__hint">Run a calculation and it will appear here for quick reuse.</p>
+              </div>
             ) : (
               state.history.map((item) => (
                 <div className="history__row" key={item.id}>
