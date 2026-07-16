@@ -250,8 +250,9 @@ function trackSequence(sequence, value) {
 
 function computeExpression(expression) {
   const normalized = expression
-    .replace(/÷/g, '/')
     .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/−/g, '-')
     .replace(/%/g, '/100')
     .replace(/\^/g, '**')
     .replace(/√\(/g, 'Math.sqrt(')
