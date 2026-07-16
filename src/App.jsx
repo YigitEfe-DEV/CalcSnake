@@ -115,6 +115,27 @@ function appendOperator(state, value) {
       error: '',
     };
   }
+  if (value === '!') {
+    if (state.awaitingClear) return state;
+    const last = state.expression.match(/(\d+)$/);
+    if (!last) {
+      return {
+        ...state,
+        display: 'Error',
+        expression: '',
+        awaitingClear: true,
+        error: 'Factorial needs an integer',
+      };
+    }
+    const prefix = state.expression.slice(0, state.expression.length - last[1].length);
+    return {
+      ...state,
+      display: '!',
+      expression: `${prefix}${last[1]}!`,
+      awaitingClear: true,
+      error: '',
+    };
+  }
   if (state.expression === '' && value !== '-') return state;
   const expression = state.awaitingClear ? state.expression : state.expression + value;
   return {
@@ -249,7 +270,7 @@ function trackSequence(sequence, value) {
 }
 
 function computeExpression(expression) {
-  const normalized = expression
+  let normalized = expression
     .replace(/×/g, '*')
     .replace(/÷/g, '/')
     .replace(/−/g, '-')
@@ -257,6 +278,8 @@ function computeExpression(expression) {
     .replace(/\^/g, '**')
     .replace(/√\(/g, 'Math.sqrt(')
     .replace(/√(\d+(?:\.\d+)?)/g, 'Math.sqrt($1)');
+
+  normalized = applyFactorial(normalized);
 
   if (!/^[0-9+\-*/().,\sMathsqrt]+$/.test(normalized.replace(/Math\.sqrt/g, 'Mathsqrt'))) {
     throw new Error('Unsafe expression');
@@ -269,6 +292,16 @@ function computeExpression(expression) {
   }
   if (!Number.isFinite(result)) throw new Error('Invalid result');
   return result;
+}
+
+function applyFactorial(expression) {
+  return expression.replace(/(\d+)!/g, (_, digits) => {
+    const n = Number(digits);
+    if (n < 0 || !Number.isInteger(n) || n > 20) throw new Error('Invalid factorial');
+    let result = 1;
+    for (let i = 2; i <= n; i += 1) result *= i;
+    return String(result);
+  });
 }
 
 function formatNumber(value) {
@@ -403,7 +436,7 @@ export default function App() {
       ['7', '8', '9', '×'],
       ['4', '5', '6', '-'],
       ['1', '2', '3', '+'],
-      ['0', '.', '='],
+      ['0', '.', '!', '='],
     ],
     [],
   );
@@ -417,7 +450,7 @@ export default function App() {
     else if (value === 'MR') dispatch({ type: 'memory-recall' });
     else if (value === 'M+') dispatch({ type: 'memory-add' });
     else if (value === 'M-') dispatch({ type: 'memory-subtract' });
-    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√'].includes(value)) dispatch({ type: 'operate', value });
+    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!'].includes(value)) dispatch({ type: 'operate', value });
     else dispatch({ type: 'append', value });
   };
 
