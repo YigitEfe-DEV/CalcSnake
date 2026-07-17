@@ -115,6 +115,16 @@ function appendOperator(state, value) {
       error: '',
     };
   }
+  if (value === 'log') {
+    const prefix = state.awaitingClear ? '' : state.expression;
+    return {
+      ...state,
+      display: 'log(',
+      expression: `${prefix}Math.log10(`,
+      awaitingClear: false,
+      error: '',
+    };
+  }
   if (value === '!') {
     if (state.awaitingClear) return state;
     const last = state.expression.match(/(\d+)$/);
@@ -287,11 +297,12 @@ function computeExpression(expression) {
     .replace(/%/g, '/100')
     .replace(/\^/g, '**')
     .replace(/√\(/g, 'Math.sqrt(')
-    .replace(/√(\d+(?:\.\d+)?)/g, 'Math.sqrt($1)');
+    .replace(/√(\d+(?:\.\d+)?)/g, 'Math.sqrt($1)')
+    .replace(/log\(/g, 'Math.log10(');
 
   normalized = applyFactorial(normalized);
 
-  if (!/^[0-9+\-*/().,\sMathsqrt]+$/.test(normalized.replace(/Math\.sqrt/g, 'Mathsqrt'))) {
+  if (!/^[0-9+\-*/().,\sMathsqrtlog]+$/.test(normalized.replace(/Math\.sqrt/g, 'Mathsqrt').replace(/Math\.log10/g, 'Mathlog10'))) {
     throw new Error('Unsafe expression');
   }
 
@@ -445,7 +456,7 @@ export default function App() {
     () => [
       ['MC', 'MR', 'M+', 'M-'],
       ['C', '⌫', '(', ')'],
-      ['%', '^', '√', '1/x'],
+      ['%', '^', '√', 'log'],
       ['7', '8', '9', '×'],
       ['4', '5', '6', '-'],
       ['1', '2', '3', '+'],
@@ -463,7 +474,7 @@ export default function App() {
     else if (value === 'MR') dispatch({ type: 'memory-recall' });
     else if (value === 'M+') dispatch({ type: 'memory-add' });
     else if (value === 'M-') dispatch({ type: 'memory-subtract' });
-    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!', '1/x'].includes(value)) dispatch({ type: 'operate', value });
+    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!', '1/x', 'log'].includes(value)) dispatch({ type: 'operate', value });
     else dispatch({ type: 'append', value });
   };
 
