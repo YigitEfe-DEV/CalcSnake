@@ -136,6 +136,16 @@ function appendOperator(state, value) {
       error: '',
     };
   }
+  if (value === '1/x') {
+    const prefix = state.awaitingClear ? '1/' : `1/(${state.expression})`;
+    return {
+      ...state,
+      display: '1/x',
+      expression: prefix,
+      awaitingClear: false,
+      error: '',
+    };
+  }
   if (state.expression === '' && value !== '-') return state;
   const expression = state.awaitingClear ? state.expression : state.expression + value;
   return {
@@ -390,6 +400,9 @@ export default function App() {
         dispatch({ type: 'append', value: event.key });
       } else if (['+', '-', '*', '/', '(', ')', '.', '%', '^'].includes(event.key)) {
         dispatch({ type: 'operate', value: event.key });
+      } else if (event.key === 'i' || event.key === 'I') {
+        event.preventDefault();
+        dispatch({ type: 'operate', value: '1/x' });
       } else if (event.key === 'Enter' || event.key === '=') {
         event.preventDefault();
         dispatch({ type: 'equals' });
@@ -432,7 +445,7 @@ export default function App() {
     () => [
       ['MC', 'MR', 'M+', 'M-'],
       ['C', '⌫', '(', ')'],
-      ['%', '^', '√', '÷'],
+      ['%', '^', '√', '1/x'],
       ['7', '8', '9', '×'],
       ['4', '5', '6', '-'],
       ['1', '2', '3', '+'],
@@ -450,7 +463,7 @@ export default function App() {
     else if (value === 'MR') dispatch({ type: 'memory-recall' });
     else if (value === 'M+') dispatch({ type: 'memory-add' });
     else if (value === 'M-') dispatch({ type: 'memory-subtract' });
-    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!'].includes(value)) dispatch({ type: 'operate', value });
+    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!', '1/x'].includes(value)) dispatch({ type: 'operate', value });
     else dispatch({ type: 'append', value });
   };
 
