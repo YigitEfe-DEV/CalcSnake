@@ -233,15 +233,24 @@ function evaluateExpression(state) {
       sequence: '',
     };
   } catch (error) {
+    const friendlyError = mapEvaluationError(error);
     return {
       ...state,
       display: 'Error',
       expression: '',
       awaitingClear: true,
-      error: error?.message === 'Division by zero' ? 'Cannot divide by zero' : 'Invalid calculation',
+      error: friendlyError,
       sequence: '',
     };
   }
+}
+
+function mapEvaluationError(error) {
+  const message = error?.message ?? '';
+  if (message === 'Division by zero') return 'Cannot divide by zero';
+  if (message === 'Unsafe expression') return 'Expression contains invalid characters';
+  if (message === 'Invalid factorial') return 'Factorial requires a non-negative integer ≤ 20';
+  return 'Invalid calculation';
 }
 
 function getCurrentValue(state) {
