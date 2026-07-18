@@ -125,6 +125,17 @@ function appendOperator(state, value) {
       error: '',
     };
   }
+  if (['sin', 'cos', 'tan'].includes(value)) {
+    const prefix = state.awaitingClear ? '' : state.expression;
+    const fn = value;
+    return {
+      ...state,
+      display: `${fn}(`,
+      expression: `${prefix}Math.${fn}(`,
+      awaitingClear: false,
+      error: '',
+    };
+  }
   if (value === '!') {
     if (state.awaitingClear) return state;
     const last = state.expression.match(/(\d+)$/);
@@ -298,11 +309,21 @@ function computeExpression(expression) {
     .replace(/\^/g, '**')
     .replace(/√\(/g, 'Math.sqrt(')
     .replace(/√(\d+(?:\.\d+)?)/g, 'Math.sqrt($1)')
-    .replace(/log\(/g, 'Math.log10(');
+    .replace(/log\(/g, 'Math.log10(')
+    .replace(/sin\(/g, 'Math.sin(')
+    .replace(/cos\(/g, 'Math.cos(')
+    .replace(/tan\(/g, 'Math.tan(');
 
   normalized = applyFactorial(normalized);
 
-  if (!/^[0-9+\-*/().,\sMathsqrtlog]+$/.test(normalized.replace(/Math\.sqrt/g, 'Mathsqrt').replace(/Math\.log10/g, 'Mathlog10'))) {
+  const sanitized = normalized
+    .replace(/Math\.sqrt/g, 'Mathsqrt')
+    .replace(/Math\.log10/g, 'Mathlog10')
+    .replace(/Math\.sin/g, 'Mathsin')
+    .replace(/Math\.cos/g, 'Mathcos')
+    .replace(/Math\.tan/g, 'Mathtan');
+
+  if (!/^[0-9+\-*/().,\sMathsqrtlogincostan]+$/.test(sanitized)) {
     throw new Error('Unsafe expression');
   }
 
@@ -457,6 +478,7 @@ export default function App() {
       ['MC', 'MR', 'M+', 'M-'],
       ['C', '⌫', '(', ')'],
       ['%', '^', '√', 'log'],
+      ['sin', 'cos', 'tan', '1/x'],
       ['7', '8', '9', '×'],
       ['4', '5', '6', '-'],
       ['1', '2', '3', '+'],
@@ -474,7 +496,7 @@ export default function App() {
     else if (value === 'MR') dispatch({ type: 'memory-recall' });
     else if (value === 'M+') dispatch({ type: 'memory-add' });
     else if (value === 'M-') dispatch({ type: 'memory-subtract' });
-    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!', '1/x', 'log'].includes(value)) dispatch({ type: 'operate', value });
+    else if (['+', '-', '×', '÷', '(', ')', '%', '^', '.', '√', '!', '1/x', 'log', 'sin', 'cos', 'tan'].includes(value)) dispatch({ type: 'operate', value });
     else dispatch({ type: 'append', value });
   };
 
