@@ -444,6 +444,18 @@ export default function App() {
       } else if (event.key === 'i' || event.key === 'I') {
         event.preventDefault();
         dispatch({ type: 'operate', value: '1/x' });
+      } else if (event.key === 'l' || event.key === 'L') {
+        event.preventDefault();
+        dispatch({ type: 'operate', value: 'log' });
+      } else if (event.key === 's' || event.key === 'S') {
+        event.preventDefault();
+        dispatch({ type: 'operate', value: 'sin' });
+      } else if (event.key === 'c' || event.key === 'C') {
+        event.preventDefault();
+        dispatch({ type: 'clear' });
+      } else if (event.key === '!') {
+        event.preventDefault();
+        dispatch({ type: 'operate', value: '!' });
       } else if (event.key === 'Enter' || event.key === '=') {
         event.preventDefault();
         dispatch({ type: 'equals' });
