@@ -160,6 +160,36 @@ input {
   font-weight: 500;
 }
 
+.display__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.display__copy {
+  border-radius: 999px;
+  padding: 6px 12px;
+  border: 1px solid rgba(160, 183, 255, 0.18);
+  background: rgba(10, 15, 34, 0.72);
+  color: rgba(229, 238, 252, 0.78);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.display__copy:hover:not(:disabled) {
+  background: rgba(58, 95, 255, 0.2);
+  color: #e9f0ff;
+}
+
+.display__copy:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .pad {
   padding: 20px;
   display: grid;

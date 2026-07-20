@@ -378,6 +378,8 @@ export default function App() {
   const [highScore, setHighScore] = useState(loadHighScore);
   const [game, setGame] = useState(() => createGameState());
   const [flashUnlock, setFlashUnlock] = useState(false);
+  const [copyState, setCopyState] = useState('idle');
+  const copyTimerRef = useRef(0);
   const lastTickRef = useRef(0);
   const rafRef = useRef(0);
   const gameRef = useRef(game);
@@ -401,6 +403,20 @@ export default function App() {
   useEffect(() => {
     gameRef.current = game;
   }, [game]);
+
+  useEffect(() => () => window.clearTimeout(copyTimerRef.current), []);
+
+  const handleCopy = async () => {
+    if (state.unlocked || state.display === 'Error') return;
+    try {
+      await navigator.clipboard.writeText(state.display);
+      setCopyState('copied');
+    } catch {
+      setCopyState('failed');
+    }
+    window.clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => setCopyState('idle'), 1600);
+  };
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -554,9 +570,20 @@ export default function App() {
               <>
                 <div className="display__expression">{state.expression || state.display}</div>
                 <div className="display__result">{state.display}</div>
-                <div className={`display__memory ${state.memory !== 0 ? 'display__memory--active' : ''}`}>
-                {state.memory === 0 ? 'Memory clear' : `Memory ${formatNumber(state.memory)}`}
-              </div>
+                <div className="display__meta">
+                  <div className={`display__memory ${state.memory !== 0 ? 'display__memory--active' : ''}`}>
+                    {state.memory === 0 ? 'Memory clear' : `Memory ${formatNumber(state.memory)}`}
+                  </div>
+                  <button
+                    type="button"
+                    className="display__copy"
+                    onClick={handleCopy}
+                    aria-label="Copy result"
+                    disabled={state.display === 'Error'}
+                  >
+                    Copy
+                  </button>
+                </div>
                 {state.error ? <div className="display__error">{state.error}</div> : null}
               </>
             ) : (
