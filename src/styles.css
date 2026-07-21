@@ -185,6 +185,18 @@ input {
   color: #e9f0ff;
 }
 
+.display__copy--copied {
+  background: rgba(80, 200, 140, 0.2);
+  border-color: rgba(120, 220, 160, 0.4);
+  color: #b8f1cf;
+}
+
+.display__copy--failed {
+  background: rgba(255, 84, 119, 0.2);
+  border-color: rgba(255, 84, 119, 0.4);
+  color: #ffd3dc;
+}
+
 .display__copy:disabled {
   opacity: 0.4;
   cursor: not-allowed;

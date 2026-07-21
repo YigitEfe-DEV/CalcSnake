@@ -576,12 +576,12 @@ export default function App() {
                   </div>
                   <button
                     type="button"
-                    className="display__copy"
+                    className={`display__copy display__copy--${copyState}`}
                     onClick={handleCopy}
                     aria-label="Copy result"
                     disabled={state.display === 'Error'}
                   >
-                    Copy
+                    {copyState === 'copied' ? 'Copied!' : copyState === 'failed' ? 'Copy failed' : 'Copy'}
                   </button>
                 </div>
                 {state.error ? <div className="display__error">{state.error}</div> : null}
