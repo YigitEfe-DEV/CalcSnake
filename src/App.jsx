@@ -699,7 +699,10 @@ function changeDirection(game, direction) {
     right: { x: 1, y: 0 },
   };
   const next = mapping[direction];
-  if (game.direction.x + next.x === 0 && game.direction.y + next.y === 0) return game;
+  if (!next) return game;
+  const current = game.direction;
+  if (current.x + next.x === 0 && current.y + next.y === 0) return game;
+  if (game.nextDirection.x + next.x === 0 && game.nextDirection.y + next.y === 0) return game;
   return { ...game, nextDirection: next };
 }
 
