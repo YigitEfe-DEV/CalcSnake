@@ -438,7 +438,10 @@ export default function App() {
         const action = map[event.key];
         if (action) {
           event.preventDefault();
-          setGame((prev) => changeDirection(prev, action));
+          setGame((prev) => {
+            if (!prev.started) return { ...prev, started: true, paused: false };
+            return changeDirection(prev, action);
+          });
           return;
         }
         if (event.key === 'p' || event.key === 'P' || event.key === 'Escape') {
@@ -540,6 +543,8 @@ export default function App() {
   const restartGame = () => setGame(createGameState());
   const togglePause = () => setGame((prev) => ({ ...prev, paused: !prev.paused }));
 
+  const startGame = () => setGame((prev) => (prev.over || !prev.started ? { ...prev, started: true, paused: false } : prev));
+
   const confirmClearHistory = () => {
     if (state.history.length === 0) return;
     const confirmed = window.confirm('Clear all calculation history?');
@@ -592,6 +597,7 @@ export default function App() {
                 highScore={highScore}
                 onRestart={restartGame}
                 onTogglePause={togglePause}
+                onStart={startGame}
               />
             )}
           </div>
@@ -681,6 +687,7 @@ function createGameState() {
     speed: 180,
     paused: false,
     over: false,
+    started: false,
   };
 }
 
@@ -697,7 +704,7 @@ function changeDirection(game, direction) {
 }
 
 function tickGame(game) {
-  if (game.paused || game.over) return game;
+  if (!game.started || game.paused || game.over) return game;
   const direction = game.nextDirection ?? game.direction;
   const head = game.snake[0];
   const nextHead = {

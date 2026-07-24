@@ -1,6 +1,7 @@
 const GRID_SIZE = 13;
 
-export default function SnakeScreen({ game, highScore, onRestart, onTogglePause }) {
+export default function SnakeScreen({ game, highScore, onRestart, onTogglePause, onStart }) {
+  const ready = game.started;
   return (
     <div className="snake">
       <div className="snake__hud">
@@ -36,15 +37,31 @@ export default function SnakeScreen({ game, highScore, onRestart, onTogglePause 
             />
           );
         })}
+        {!ready && !game.over ? (
+          <div className="snake__overlay snake__overlay--ready">
+            <div>
+              <h3>Ready</h3>
+              <p>Press any arrow key or tap Start to play.</p>
+              <button type="button" className="text-button" onClick={onStart}>
+                Start
+              </button>
+            </div>
+          </div>
+        ) : null}
         {game.over ? <div className="snake__overlay">Game Over</div> : null}
-        {game.paused && !game.over ? <div className="snake__overlay">Paused</div> : null}
+        {game.paused && ready && !game.over ? <div className="snake__overlay">Paused</div> : null}
       </div>
       <div className="snake__controls">
         <button type="button" className="text-button" onClick={onRestart}>
           Restart
         </button>
-        <button type="button" className="text-button" onClick={onTogglePause}>
-          Pause
+        <button
+          type="button"
+          className="text-button"
+          onClick={onTogglePause}
+          disabled={!ready || game.over}
+        >
+          {game.paused ? 'Resume' : 'Pause'}
         </button>
       </div>
     </div>

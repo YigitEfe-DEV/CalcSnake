@@ -444,6 +444,27 @@ input {
   text-transform: uppercase;
 }
 
+.snake__overlay--ready {
+  text-transform: none;
+  letter-spacing: normal;
+  text-align: center;
+  padding: 16px;
+}
+
+.snake__overlay--ready h3 {
+  margin: 0 0 6px;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #e9f0ff;
+}
+
+.snake__overlay--ready p {
+  margin: 0 0 14px;
+  font-size: 0.92rem;
+  color: rgba(229, 238, 252, 0.7);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
 .shell--flash .display {
   animation: pulse 900ms ease;
 }
