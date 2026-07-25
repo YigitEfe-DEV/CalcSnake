@@ -733,12 +733,12 @@ function tickGame(game) {
 
 function spawnFood(blocked) {
   const blockedSet = new Set(blocked.map((item) => `${item.x},${item.y}`));
-  let food = { x: 0, y: 0 };
-  do {
-    food = {
-      x: Math.floor(Math.random() * GRID_SIZE),
-      y: Math.floor(Math.random() * GRID_SIZE),
-    };
-  } while (blockedSet.has(`${food.x},${food.y}`));
-  return food;
+  const free = [];
+  for (let y = 0; y < GRID_SIZE; y += 1) {
+    for (let x = 0; x < GRID_SIZE; x += 1) {
+      if (!blockedSet.has(`${x},${y}`)) free.push({ x, y });
+    }
+  }
+  if (free.length === 0) return { x: 0, y: 0 };
+  return free[Math.floor(Math.random() * free.length)];
 }
