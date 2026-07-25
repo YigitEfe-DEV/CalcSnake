@@ -391,6 +391,29 @@ input {
   letter-spacing: 0.18em;
 }
 
+.snake__metric strong {
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  transition: color 200ms ease;
+}
+
+.snake__metric--pulse strong {
+  animation: scorePulse 600ms ease;
+  color: #b8f1cf;
+}
+
+@keyframes scorePulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .snake__grid {
   position: relative;
   display: grid;

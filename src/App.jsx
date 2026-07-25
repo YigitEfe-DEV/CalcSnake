@@ -379,6 +379,8 @@ export default function App() {
   const [game, setGame] = useState(() => createGameState());
   const [flashUnlock, setFlashUnlock] = useState(false);
   const [copyState, setCopyState] = useState('idle');
+  const [justScored, setJustScored] = useState(false);
+  const scoreTimerRef = useRef(0);
   const copyTimerRef = useRef(0);
   const lastTickRef = useRef(0);
   const rafRef = useRef(0);
@@ -513,6 +515,20 @@ export default function App() {
     if (game.score > highScore) setHighScore(game.score);
   }, [game.score, highScore, state.unlocked]);
 
+  useEffect(() => {
+    if (!state.unlocked) return undefined;
+    if (game.score <= 0) return undefined;
+    setJustScored(true);
+    window.clearTimeout(scoreTimerRef.current);
+    scoreTimerRef.current = window.setTimeout(() => setJustScored(false), 600);
+    return () => window.clearTimeout(scoreTimerRef.current);
+  }, [game.score, state.unlocked]);
+
+  useEffect(() => () => {
+    window.clearTimeout(scoreTimerRef.current);
+    window.clearTimeout(copyTimerRef.current);
+  }, []);
+
   const keys = useMemo(
     () => [
       ['MC', 'MR', 'M+', 'M-'],
@@ -598,6 +614,7 @@ export default function App() {
                 onRestart={restartGame}
                 onTogglePause={togglePause}
                 onStart={startGame}
+                justScored={justScored}
               />
             )}
           </div>

@@ -1,15 +1,15 @@
 const GRID_SIZE = 13;
 
-export default function SnakeScreen({ game, highScore, onRestart, onTogglePause, onStart }) {
+export default function SnakeScreen({ game, highScore, onRestart, onTogglePause, onStart, justScored }) {
   const ready = game.started;
   return (
     <div className="snake">
       <div className="snake__hud">
-        <div>
+        <div className={justScored ? 'snake__metric snake__metric--pulse' : 'snake__metric'}>
           <span className="snake__label">Score</span>
           <strong>{game.score}</strong>
         </div>
-        <div>
+        <div className="snake__metric">
           <span className="snake__label">High</span>
           <strong>{highScore}</strong>
         </div>
