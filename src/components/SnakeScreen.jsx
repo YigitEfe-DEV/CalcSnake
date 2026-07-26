@@ -48,7 +48,18 @@ export default function SnakeScreen({ game, highScore, onRestart, onTogglePause,
             </div>
           </div>
         ) : null}
-        {game.over ? <div className="snake__overlay">Game Over</div> : null}
+        {game.over ? (
+          <div className="snake__overlay snake__overlay--end">
+            <div className="snake__overlay-panel">
+              <h3>Game Over</h3>
+              <p>Final score <strong>{game.score}</strong></p>
+              {game.score > 0 && game.score === highScore ? <p className="snake__badge">New high score!</p> : null}
+              <button type="button" className="text-button" onClick={onRestart}>
+                Play again
+              </button>
+            </div>
+          </div>
+        ) : null}
         {game.paused && ready && !game.over ? <div className="snake__overlay">Paused</div> : null}
       </div>
       <div className="snake__controls">

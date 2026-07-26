@@ -488,6 +488,39 @@ input {
   text-transform: none;
 }
 
+.snake__overlay--end {
+  background: rgba(4, 8, 18, 0.78);
+}
+
+.snake__overlay-panel {
+  background: rgba(11, 17, 36, 0.92);
+  border: 1px solid rgba(160, 183, 255, 0.18);
+  border-radius: 22px;
+  padding: 24px 30px;
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.snake__overlay-panel h3 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #ffd3dc;
+}
+
+.snake__overlay-panel p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(229, 238, 252, 0.78);
+}
+
+.snake__badge {
+  color: #b8f1cf;
+  font-weight: 600;
+}
+
 .shell--flash .display {
   animation: pulse 900ms ease;
 }
