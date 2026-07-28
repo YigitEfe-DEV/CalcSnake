@@ -454,6 +454,15 @@ export default function App() {
         if (event.key === 'r' || event.key === 'R') {
           event.preventDefault();
           setGame(createGameState());
+          setJustScored(false);
+          window.clearTimeout(scoreTimerRef.current);
+        }
+        if (event.key === ' ' || event.key === 'Enter') {
+          event.preventDefault();
+          setGame((prev) => {
+            if (prev.over) return createGameState();
+            return prev;
+          });
         }
         return;
       }
