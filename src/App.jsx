@@ -448,8 +448,19 @@ export default function App() {
         }
         if (event.key === 'p' || event.key === 'P' || event.key === 'Escape') {
           event.preventDefault();
-          setGame((prev) => ({ ...prev, paused: !prev.paused }));
+          setGame((prev) => {
+            if (!prev.started || prev.over) return prev;
+            return { ...prev, paused: !prev.paused };
+          });
           return;
+        }
+        if (event.key === ' ') {
+          event.preventDefault();
+          setGame((prev) => {
+            if (!prev.started && !prev.over) return { ...prev, started: true, paused: false };
+            if (prev.over) return createGameState();
+            return { ...prev, paused: !prev.paused };
+          });
         }
         if (event.key === 'r' || event.key === 'R') {
           event.preventDefault();
