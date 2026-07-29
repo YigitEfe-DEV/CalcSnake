@@ -1,6 +1,6 @@
 const GRID_SIZE = 13;
 
-export default function SnakeScreen({ game, highScore, onRestart, onTogglePause, onStart, justScored }) {
+export default function SnakeScreen({ game, highScore, speedLevel, onRestart, onTogglePause, onStart, onSpeedChange, justScored }) {
   const ready = game.started;
   return (
     <div className="snake">
@@ -12,6 +12,23 @@ export default function SnakeScreen({ game, highScore, onRestart, onTogglePause,
         <div className="snake__metric">
           <span className="snake__label">High</span>
           <strong>{highScore}</strong>
+        </div>
+        <div className="snake__metric snake__metric--speed">
+          <span className="snake__label">Speed</span>
+          <div className="snake__speed-group" role="radiogroup" aria-label="Game speed">
+            {['slow', 'normal', 'fast'].map((level) => (
+              <button
+                key={level}
+                type="button"
+                role="radio"
+                aria-checked={speedLevel === level}
+                className={`snake__speed ${speedLevel === level ? 'snake__speed--active' : ''}`}
+                onClick={() => onSpeedChange?.(level)}
+              >
+                {level === 'slow' ? '×' : level === 'fast' ? '×3' : '×2'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <div className="snake__grid" role="application" aria-label="Snake game screen">

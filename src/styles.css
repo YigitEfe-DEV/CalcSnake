@@ -402,6 +402,36 @@ input {
   color: #b8f1cf;
 }
 
+.snake__metric--speed {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.snake__speed-group {
+  display: inline-flex;
+  gap: 4px;
+  border: 1px solid rgba(160, 183, 255, 0.15);
+  border-radius: 999px;
+  padding: 2px;
+  background: rgba(10, 15, 34, 0.6);
+}
+
+.snake__speed {
+  border: 0;
+  background: transparent;
+  color: rgba(229, 238, 252, 0.7);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.snake__speed--active {
+  background: rgba(58, 95, 255, 0.32);
+  color: #ffffff;
+}
+
 @keyframes scorePulse {
   0% {
     transform: scale(1);

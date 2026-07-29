@@ -481,20 +481,20 @@ export default function App() {
           event.preventDefault();
           setGame((prev) => {
             if (!prev.started && !prev.over) return { ...prev, started: true, paused: false };
-            if (prev.over) return createGameState();
+            if (prev.over) return createGameState(settings.speedLevel);
             return { ...prev, paused: !prev.paused };
           });
         }
         if (event.key === 'r' || event.key === 'R') {
           event.preventDefault();
-          setGame(createGameState());
+          setGame(createGameState(settings.speedLevel));
           setJustScored(false);
           window.clearTimeout(scoreTimerRef.current);
         }
         if (event.key === ' ' || event.key === 'Enter') {
           event.preventDefault();
           setGame((prev) => {
-            if (prev.over) return createGameState();
+            if (prev.over) return createGameState(settings.speedLevel);
             return prev;
           });
         }
@@ -599,10 +599,16 @@ export default function App() {
     else dispatch({ type: 'append', value });
   };
 
-  const restartGame = () => setGame(createGameState());
+  const restartGame = () => setGame(createGameState(settings.speedLevel));
   const togglePause = () => setGame((prev) => ({ ...prev, paused: !prev.paused }));
 
   const startGame = () => setGame((prev) => (prev.over || !prev.started ? { ...prev, started: true, paused: false } : prev));
+
+  const changeSpeedLevel = (level) => {
+    if (!['slow', 'normal', 'fast'].includes(level)) return;
+    setSettings((prev) => ({ ...prev, speedLevel: level }));
+    setGame((prev) => ({ ...createGameState(level), started: prev.started && !prev.over, paused: prev.paused, score: prev.score }));
+  };
 
   const confirmClearHistory = () => {
     if (state.history.length === 0) return;
@@ -654,9 +660,11 @@ export default function App() {
               <SnakeScreen
                 game={game}
                 highScore={highScore}
+                speedLevel={settings.speedLevel}
                 onRestart={restartGame}
                 onTogglePause={togglePause}
                 onStart={startGame}
+                onSpeedChange={changeSpeedLevel}
                 justScored={justScored}
               />
             )}
@@ -728,7 +736,7 @@ export default function App() {
   );
 }
 
-function createGameState() {
+function createGameState(speedLevel = 'normal') {
   const center = Math.floor(GRID_SIZE / 2);
   return {
     snake: [
@@ -744,11 +752,17 @@ function createGameState() {
       { x: center - 2, y: center },
     ]),
     score: 0,
-    speed: 180,
+    speed: baseSpeedFor(speedLevel),
     paused: false,
     over: false,
     started: false,
   };
+}
+
+function baseSpeedFor(level) {
+  if (level === 'slow') return 240;
+  if (level === 'fast') return 130;
+  return 180;
 }
 
 function changeDirection(game, direction) {
