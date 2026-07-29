@@ -3,6 +3,7 @@ import SnakeScreen from './components/SnakeScreen';
 
 const HISTORY_KEY = 'calcsnake-history';
 const HIGH_SCORE_KEY = 'calcsnake-high-score';
+const SETTINGS_KEY = 'calcsnake-settings';
 const UNLOCK_CODE = '1984';
 const MAX_HISTORY = 8;
 const GRID_SIZE = 13;
@@ -373,9 +374,23 @@ function loadHighScore() {
   return raw ? Number(raw) || 0 : 0;
 }
 
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return { speedLevel: 'normal' };
+    const parsed = JSON.parse(raw);
+    return {
+      speedLevel: ['slow', 'normal', 'fast'].includes(parsed.speedLevel) ? parsed.speedLevel : 'normal',
+    };
+  } catch {
+    return { speedLevel: 'normal' };
+  }
+}
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [highScore, setHighScore] = useState(loadHighScore);
+  const [settings, setSettings] = useState(loadSettings);
   const [game, setGame] = useState(() => createGameState());
   const [flashUnlock, setFlashUnlock] = useState(false);
   const [copyState, setCopyState] = useState('idle');
@@ -393,6 +408,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
   }, [highScore]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch {
+      /* storage unavailable */
+    }
+  }, [settings]);
 
   useEffect(() => {
     if (state.unlocked) {
