@@ -1,6 +1,6 @@
 const GRID_SIZE = 13;
 
-export default function SnakeScreen({ game, highScore, speedLevel, onRestart, onTogglePause, onStart, onSpeedChange, justScored }) {
+export default function SnakeScreen({ game, highScore, speedLevel, onRestart, onTogglePause, onStart, onSpeedChange, justScored, onDirection }) {
   const ready = game.started;
   return (
     <div className="snake">
@@ -91,6 +91,14 @@ export default function SnakeScreen({ game, highScore, speedLevel, onRestart, on
         >
           {game.paused ? 'Resume' : 'Pause'}
         </button>
+      </div>
+      <div className="snake__dpad" aria-label="Direction pad">
+        <button type="button" className="snake__dpad-btn" onClick={() => onDirection?.('up')} aria-label="Up">▲</button>
+        <div className="snake__dpad-row">
+          <button type="button" className="snake__dpad-btn" onClick={() => onDirection?.('left')} aria-label="Left">◀</button>
+          <button type="button" className="snake__dpad-btn" onClick={() => onDirection?.('down')} aria-label="Down">▼</button>
+          <button type="button" className="snake__dpad-btn" onClick={() => onDirection?.('right')} aria-label="Right">▶</button>
+        </div>
       </div>
     </div>
   );

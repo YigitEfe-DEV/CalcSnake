@@ -554,6 +554,36 @@ export default function App() {
   }, [state.unlocked]);
 
   useEffect(() => {
+    if (!state.unlocked) return undefined;
+    let touchStart = null;
+    const onTouchStart = (event) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      touchStart = { x: touch.clientX, y: touch.clientY };
+    };
+    const onTouchEnd = (event) => {
+      if (!touchStart) return;
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+      const dx = touch.clientX - touchStart.x;
+      const dy = touch.clientY - touchStart.y;
+      if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        handleDirection(dx > 0 ? 'right' : 'left');
+      } else {
+        handleDirection(dy > 0 ? 'down' : 'up');
+      }
+      touchStart = null;
+    };
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend', onTouchEnd);
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [state.unlocked]);
+
+  useEffect(() => {
     if (!state.unlocked) return;
     if (game.score > highScore) setHighScore(game.score);
   }, [game.score, highScore, state.unlocked]);
@@ -608,6 +638,13 @@ export default function App() {
     if (!['slow', 'normal', 'fast'].includes(level)) return;
     setSettings((prev) => ({ ...prev, speedLevel: level }));
     setGame((prev) => ({ ...createGameState(level), started: prev.started && !prev.over, paused: prev.paused, score: prev.score }));
+  };
+
+  const handleDirection = (direction) => {
+    setGame((prev) => {
+      if (!prev.started && !prev.over) return { ...prev, started: true, paused: false };
+      return changeDirection(prev, direction);
+    });
   };
 
   const confirmClearHistory = () => {
@@ -665,6 +702,7 @@ export default function App() {
                 onTogglePause={togglePause}
                 onStart={startGame}
                 onSpeedChange={changeSpeedLevel}
+                onDirection={handleDirection}
                 justScored={justScored}
               />
             )}

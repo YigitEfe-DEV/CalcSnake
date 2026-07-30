@@ -276,6 +276,41 @@ input {
   gap: 16px;
 }
 
+.snake__dpad {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.snake__dpad-row {
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  gap: 8px;
+  justify-content: center;
+}
+
+.snake__dpad-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(160, 183, 255, 0.18);
+  background: rgba(10, 15, 34, 0.7);
+  color: #e9f0ff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.snake__dpad-btn:active {
+  background: rgba(58, 95, 255, 0.32);
+}
+
+@media (min-width: 720px) {
+  .snake__dpad {
+    display: none;
+  }
+}
+
 .panel-header h2 {
   margin: 0;
   font-size: 1.1rem;
