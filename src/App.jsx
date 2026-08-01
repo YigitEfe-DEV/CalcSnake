@@ -20,11 +20,27 @@ const initialState = {
 };
 
 function loadHistory() {
+  return readJSON(HISTORY_KEY, []);
+}
+
+function readJSON(key, fallback) {
+  if (typeof window === 'undefined' || !window.localStorage) return fallback;
   try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return parsed ?? fallback;
   } catch {
-    return [];
+    return fallback;
+  }
+}
+
+function writeJSON(key, value) {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* storage unavailable or full */
   }
 }
 
@@ -370,8 +386,14 @@ function prettifyExpression(expression) {
 }
 
 function loadHighScore() {
-  const raw = localStorage.getItem(HIGH_SCORE_KEY);
-  return raw ? Number(raw) || 0 : 0;
+  if (typeof window === 'undefined' || !window.localStorage) return 0;
+  try {
+    const raw = window.localStorage.getItem(HIGH_SCORE_KEY);
+    const value = Number(raw);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  } catch {
+    return 0;
+  }
 }
 
 function loadSettings() {
@@ -402,19 +424,20 @@ export default function App() {
   const gameRef = useRef(game);
 
   useEffect(() => {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(state.history));
+    writeJSON(HISTORY_KEY, state.history);
   }, [state.history]);
 
   useEffect(() => {
-    localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
-  }, [highScore]);
-
-  useEffect(() => {
+    if (typeof window === 'undefined' || !window.localStorage) return;
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      window.localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
     } catch {
       /* storage unavailable */
     }
+  }, [highScore]);
+
+  useEffect(() => {
+    writeJSON(SETTINGS_KEY, settings);
   }, [settings]);
 
   useEffect(() => {
