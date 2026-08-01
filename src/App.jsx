@@ -537,19 +537,25 @@ export default function App() {
   useEffect(() => {
     if (!state.unlocked) return undefined;
     let mounted = true;
+    let frame = 0;
     const step = (timestamp) => {
+      if (!mounted) return;
       const current = gameRef.current;
       const elapsed = timestamp - lastTickRef.current;
       if (elapsed >= current.speed) {
         lastTickRef.current = timestamp;
         setGame((prev) => tickGame(prev));
       }
-      if (mounted) rafRef.current = window.requestAnimationFrame(step);
+      frame = window.requestAnimationFrame(step);
+      rafRef.current = frame;
     };
-    rafRef.current = window.requestAnimationFrame(step);
+    lastTickRef.current = window.performance.now();
+    frame = window.requestAnimationFrame(step);
+    rafRef.current = frame;
     return () => {
       mounted = false;
-      window.cancelAnimationFrame(rafRef.current);
+      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     };
   }, [state.unlocked]);
 
