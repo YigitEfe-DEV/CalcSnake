@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import SnakeScreen from './components/SnakeScreen';
+import {
+  computeExpression,
+  formatNumber,
+  hasDecimalInCurrentNumber,
+  mapEvaluationError,
+  prettifyExpression,
+} from './utils/math';
+import { readJSON, readNumber, writeJSON, writeString } from './utils/storage';
 
 const HISTORY_KEY = 'calcsnake-history';
 const HIGH_SCORE_KEY = 'calcsnake-high-score';
@@ -21,27 +29,6 @@ const initialState = {
 
 function loadHistory() {
   return readJSON(HISTORY_KEY, []);
-}
-
-function readJSON(key, fallback) {
-  if (typeof window === 'undefined' || !window.localStorage) return fallback;
-  try {
-    const raw = window.localStorage.getItem(key);
-    if (!raw) return fallback;
-    const parsed = JSON.parse(raw);
-    return parsed ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function writeJSON(key, value) {
-  if (typeof window === 'undefined' || !window.localStorage) return;
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* storage unavailable or full */
-  }
 }
 
 function reducer(state, action) {
@@ -113,11 +100,6 @@ function appendInput(state, value) {
     error: '',
     sequence: trackSequence(state.sequence, value),
   };
-}
-
-function hasDecimalInCurrentNumber(expression) {
-  const segments = expression.split(/[+\-*/()^]/);
-  return segments[segments.length - 1].includes('.');
 }
 
 function appendOperator(state, value) {
@@ -262,14 +244,6 @@ function evaluateExpression(state) {
   }
 }
 
-function mapEvaluationError(error) {
-  const message = error?.message ?? '';
-  if (message === 'Division by zero') return 'Cannot divide by zero';
-  if (message === 'Unsafe expression') return 'Expression contains invalid characters';
-  if (message === 'Invalid factorial') return 'Factorial requires a non-negative integer ≤ 20';
-  return 'Invalid calculation';
-}
-
 function getCurrentValue(state) {
   if (!state.expression) return Number(state.display) || 0;
   return computeExpression(state.expression);
@@ -326,87 +300,15 @@ function trackSequence(sequence, value) {
   return candidate.slice(-4);
 }
 
-function computeExpression(expression) {
-  let normalized = expression
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .replace(/−/g, '-')
-    .replace(/%/g, '/100')
-    .replace(/\^/g, '**')
-    .replace(/√\(/g, 'Math.sqrt(')
-    .replace(/√(\d+(?:\.\d+)?)/g, 'Math.sqrt($1)')
-    .replace(/log\(/g, 'Math.log10(')
-    .replace(/sin\(/g, 'Math.sin(')
-    .replace(/cos\(/g, 'Math.cos(')
-    .replace(/tan\(/g, 'Math.tan(');
-
-  normalized = applyFactorial(normalized);
-
-  const sanitized = normalized
-    .replace(/Math\.sqrt/g, 'Mathsqrt')
-    .replace(/Math\.log10/g, 'Mathlog10')
-    .replace(/Math\.sin/g, 'Mathsin')
-    .replace(/Math\.cos/g, 'Mathcos')
-    .replace(/Math\.tan/g, 'Mathtan');
-
-  if (!/^[0-9+\-*/().,\sMathsqrtlogincostan]+$/.test(sanitized)) {
-    throw new Error('Unsafe expression');
-  }
-
-  // eslint-disable-next-line no-new-func
-  const result = Function(`"use strict"; return (${normalized});`)();
-  if (result === Infinity || result === -Infinity) {
-    throw new Error('Division by zero');
-  }
-  if (!Number.isFinite(result)) throw new Error('Invalid result');
-  return result;
-}
-
-function applyFactorial(expression) {
-  return expression.replace(/(\d+)!/g, (_, digits) => {
-    const n = Number(digits);
-    if (n < 0 || !Number.isInteger(n) || n > 20) throw new Error('Invalid factorial');
-    let result = 1;
-    for (let i = 2; i <= n; i += 1) result *= i;
-    return String(result);
-  });
-}
-
-function formatNumber(value) {
-  if (Object.is(value, -0)) return '0';
-  return Number.isInteger(value) ? String(value) : Number(value.toFixed(10)).toString();
-}
-
-function prettifyExpression(expression) {
-  return expression
-    .replace(/Math\.sqrt\(/g, '√(')
-    .replace(/\*/g, '×')
-    .replace(/\//g, '÷')
-    .replace(/\^/g, '^');
-}
-
 function loadHighScore() {
-  if (typeof window === 'undefined' || !window.localStorage) return 0;
-  try {
-    const raw = window.localStorage.getItem(HIGH_SCORE_KEY);
-    const value = Number(raw);
-    return Number.isFinite(value) && value >= 0 ? value : 0;
-  } catch {
-    return 0;
-  }
+  return readNumber(HIGH_SCORE_KEY, 0);
 }
 
 function loadSettings() {
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return { speedLevel: 'normal' };
-    const parsed = JSON.parse(raw);
-    return {
-      speedLevel: ['slow', 'normal', 'fast'].includes(parsed.speedLevel) ? parsed.speedLevel : 'normal',
-    };
-  } catch {
-    return { speedLevel: 'normal' };
-  }
+  const parsed = readJSON(SETTINGS_KEY, { speedLevel: 'normal' });
+  return {
+    speedLevel: ['slow', 'normal', 'fast'].includes(parsed.speedLevel) ? parsed.speedLevel : 'normal',
+  };
 }
 
 export default function App() {
@@ -428,12 +330,7 @@ export default function App() {
   }, [state.history]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.localStorage) return;
-    try {
-      window.localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
-    } catch {
-      /* storage unavailable */
-    }
+    writeString(HIGH_SCORE_KEY, highScore);
   }, [highScore]);
 
   useEffect(() => {
