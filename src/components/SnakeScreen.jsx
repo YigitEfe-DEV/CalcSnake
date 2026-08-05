@@ -1,4 +1,4 @@
-const GRID_SIZE = 13;
+import { GRID_SIZE } from '../utils/snake';
 
 export default function SnakeScreen({ game, highScore, speedLevel, onRestart, onTogglePause, onStart, onSpeedChange, justScored, onDirection }) {
   const ready = game.started;
