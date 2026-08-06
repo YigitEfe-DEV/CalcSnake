@@ -167,7 +167,8 @@ function appendOperator(state, value) {
     };
   }
   if (state.expression === '' && value !== '-') return state;
-  const expression = state.awaitingClear ? state.expression : state.expression + value;
+  if (!state.awaitingClear && /[+\-*/^]$/.test(state.expression)) return state;
+  const expression = `${state.expression}${value}`;
   return {
     ...state,
     display: value,
