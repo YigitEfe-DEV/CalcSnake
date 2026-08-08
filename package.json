@@ -1,13 +1,22 @@
 {
   "name": "calcsnake",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
+  "description": "A precision calculator with a hidden Snake game.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "keywords": [
+    "calculator",
+    "snake",
+    "react",
+    "vite",
+    "game"
+  ],
+  "license": "MIT",
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
