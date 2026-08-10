@@ -567,6 +567,7 @@ input {
   gap: 8px;
   text-transform: none;
   letter-spacing: normal;
+  min-width: 220px;
 }
 
 .snake__overlay-panel h3 {
